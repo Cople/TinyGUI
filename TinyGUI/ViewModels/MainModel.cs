@@ -125,7 +125,7 @@ namespace TinyGUI.ViewModels
             set => SetField(ref _hasCompressionHistoryItems, value, nameof(HasCompressionHistoryItems));
         }
 
-        private string _compressionCountText = "0/500";
+        private string _compressionCountText = "0";
 
         public string CompressionCountText
         {

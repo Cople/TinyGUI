@@ -98,6 +98,9 @@
     <data name="CompressionCount" xml:space="preserve">
         <value>當月已使用：</value>
     </data>
+    <data name="CompressionCountTip" xml:space="preserve">
+        <value>每月 500 次免費壓縮</value>
+    </data>
     <data name="CompressionFailed" xml:space="preserve">
         <value>壓縮失敗</value>
     </data>

@@ -204,6 +204,9 @@
   <data name="CompressionCount" xml:space="preserve">
     <value>Compression count: </value>
   </data>
+  <data name="CompressionCountTip" xml:space="preserve">
+    <value>500 free compressions per month</value>
+  </data>
   <data name="CompressionFailed" xml:space="preserve">
     <value>Compression failed</value>
   </data>

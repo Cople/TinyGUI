@@ -372,7 +372,7 @@ namespace TinyGUI.Views
         {
             if (string.IsNullOrEmpty(TinyGUI.Properties.Settings.Default.Key))
             {
-                _mainModel.CompressionCountText = "0/500";
+                _mainModel.CompressionCountText = "0";
                 return;
             }
 
@@ -384,7 +384,7 @@ namespace TinyGUI.Views
             }
             catch
             {
-                _mainModel.CompressionCountText = "0/500";
+                _mainModel.CompressionCountText = "0";
                 // Invalid keys are already surfaced when the user tries to process an image.
             }
         }
@@ -394,7 +394,7 @@ namespace TinyGUI.Views
             uint? count = Tinify.CompressionCount;
             if (count.HasValue)
             {
-                _mainModel.CompressionCountText = $"{count.Value}/500";
+                _mainModel.CompressionCountText = count.Value.ToString();
             }
         }
 

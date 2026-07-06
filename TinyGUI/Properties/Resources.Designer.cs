@@ -305,6 +305,12 @@ namespace TinyGUI.Properties {
             }
         }
 
+        public static string CompressionCountTip {
+            get {
+                return ResourceManager.GetString("CompressionCountTip", resourceCulture);
+            }
+        }
+
         public static string CompressionFailed {
             get {
                 return ResourceManager.GetString("CompressionFailed", resourceCulture);
