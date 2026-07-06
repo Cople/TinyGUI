@@ -10,3 +10,4 @@ BundleArtifacts/
 /Installer/
 !/installer/
 !/installer/TinyGUI.iss
+/installer/Languages/
