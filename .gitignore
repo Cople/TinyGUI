@@ -8,3 +8,5 @@ riderModule.iml
 AppPackages/
 BundleArtifacts/
 /Installer/
+!/installer/
+!/installer/TinyGUI.iss

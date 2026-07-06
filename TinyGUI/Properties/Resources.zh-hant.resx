@@ -83,4 +83,64 @@
     <data name="CreationTimeTip" xml:space="preserve">
         <value>保留任何GPS位置信息，該信息描述圖片或者照片創建的位置。包含EXIF GPS維度和GPS精度標籤（JPEG）。使用大約130個額外字節。</value>
     </data>
+    <data name="Browse" xml:space="preserve">
+        <value>選擇</value>
+    </data>
+    <data name="Completed" xml:space="preserve">
+        <value>完成</value>
+    </data>
+    <data name="CompressedLabel" xml:space="preserve">
+        <value>  壓縮後：</value>
+    </data>
+    <data name="Compressing" xml:space="preserve">
+        <value>壓縮中</value>
+    </data>
+    <data name="CompressionCount" xml:space="preserve">
+        <value>當月已使用：</value>
+    </data>
+    <data name="CompressionFailed" xml:space="preserve">
+        <value>壓縮失敗</value>
+    </data>
+    <data name="ConfigureApiKeyFirst" xml:space="preserve">
+        <value>請先配置API Key</value>
+    </data>
+    <data name="EmptyCompressionHistory" xml:space="preserve">
+        <value>暫無壓縮記錄</value>
+    </data>
+    <data name="History" xml:space="preserve">
+        <value>歷史記錄</value>
+    </data>
+    <data name="OpenInExplorer" xml:space="preserve">
+        <value>在檔案總管中開啟</value>
+    </data>
+    <data name="OptimizationLabel" xml:space="preserve">
+        <value>  優化：</value>
+    </data>
+    <data name="OriginalFolder" xml:space="preserve">
+        <value>原文件夾</value>
+    </data>
+    <data name="OriginalLabel" xml:space="preserve">
+        <value>原始：</value>
+    </data>
+    <data name="ReplaceOriginalFile" xml:space="preserve">
+        <value>替換原檔案</value>
+    </data>
+    <data name="SaveMode" xml:space="preserve">
+        <value>保存方式：</value>
+    </data>
+    <data name="SaveToSelectedFolder" xml:space="preserve">
+        <value>保存到指定文件夾</value>
+    </data>
+    <data name="SelectOutputFolder" xml:space="preserve">
+        <value>選擇保存文件夾</value>
+    </data>
+    <data name="UnableCreateCompressedSource" xml:space="preserve">
+        <value>無法創建壓縮來源。</value>
+    </data>
+    <data name="Uploading" xml:space="preserve">
+        <value>上傳中</value>
+    </data>
+    <data name="ViewImage" xml:space="preserve">
+        <value>查看圖片</value>
+    </data>
 </root>

@@ -9,7 +9,24 @@ namespace TinyGUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is bool isVisible && isVisible)
+            string parameterText = parameter as string;
+            bool invert = parameterText == "Invert";
+            bool isVisible;
+            if (!string.IsNullOrEmpty(parameterText) && parameterText != "Invert")
+            {
+                isVisible = string.Equals(System.Convert.ToString(value, culture), parameterText, StringComparison.Ordinal);
+            }
+            else
+            {
+                isVisible = value is bool visible && visible;
+            }
+
+            if (invert)
+            {
+                isVisible = !isVisible;
+            }
+
+            if (isVisible)
             {
                 return Visibility.Visible;
             }

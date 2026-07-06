@@ -1,0 +1,73 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Extract version from tag
+        id: version
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $version = $tag -replace '^v', ''
+          if ($version -notmatch '^\d+\.\d+\.\d+(\.\d+)?$') {
+            throw "Tag '$tag' must match vMAJOR.MINOR.PATCH or vMAJOR.MINOR.PATCH.BUILD."
+          }
+
+          $assemblyVersion = $version
+          if (($version -split '\.').Count -eq 3) {
+            $assemblyVersion = "$version.0"
+          }
+
+          "version=$version" >> $env:GITHUB_OUTPUT
+          "assembly_version=$assemblyVersion" >> $env:GITHUB_OUTPUT
+
+      - name: Apply assembly version
+        shell: pwsh
+        run: |
+          $assemblyVersion = "${{ steps.version.outputs.assembly_version }}"
+          $assemblyInfo = "TinyGUI\Properties\AssemblyInfo.cs"
+          $content = Get-Content -Raw $assemblyInfo
+          $content = $content -replace 'AssemblyVersion\("[^"]+"\)', "AssemblyVersion(`"$assemblyVersion`")"
+          $content = $content -replace 'AssemblyFileVersion\("[^"]+"\)', "AssemblyFileVersion(`"$assemblyVersion`")"
+          Set-Content -Path $assemblyInfo -Value $content -Encoding UTF8
+
+      - name: Restore
+        shell: pwsh
+        run: msbuild TinyGUI\TinyGUI.csproj /t:Restore /p:Configuration=Release
+
+      - name: Build
+        shell: pwsh
+        run: msbuild TinyGUI\TinyGUI.csproj /t:Build /p:Configuration=Release /p:Platform=AnyCPU /m
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup --yes --no-progress
+
+      - name: Build installer
+        shell: pwsh
+        run: |
+          $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+          & $iscc installer\TinyGUI.iss "/DMyAppVersion=${{ steps.version.outputs.version }}"
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: TinyGUI ${{ steps.version.outputs.version }}
+          files: installer/output/TinyGUI-${{ steps.version.outputs.version }}-Setup.exe

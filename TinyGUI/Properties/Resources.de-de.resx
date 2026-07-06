@@ -83,4 +83,64 @@
     <data name="CreationTimeTip" xml:space="preserve">
         <value>Alle GPS-Standortinformationen, die beschreiben, wo das Bild oder Foto erstellt wurde, werden beibehalten. Enthält EXIF-GPS-Abmessungen und GPS-Genauigkeits-Tags (JPEG). Verwendet etwa 130 zusätzliche Bytes.</value>
     </data>
+    <data name="Browse" xml:space="preserve">
+        <value>Auswählen</value>
+    </data>
+    <data name="Completed" xml:space="preserve">
+        <value>Abgeschlossen</value>
+    </data>
+    <data name="CompressedLabel" xml:space="preserve">
+        <value>  Komprimiert: </value>
+    </data>
+    <data name="Compressing" xml:space="preserve">
+        <value>Wird komprimiert</value>
+    </data>
+    <data name="CompressionCount" xml:space="preserve">
+        <value>Komprimierungszähler: </value>
+    </data>
+    <data name="CompressionFailed" xml:space="preserve">
+        <value>Komprimierung fehlgeschlagen</value>
+    </data>
+    <data name="ConfigureApiKeyFirst" xml:space="preserve">
+        <value>Bitte zuerst API Key konfigurieren</value>
+    </data>
+    <data name="EmptyCompressionHistory" xml:space="preserve">
+        <value>Kein Komprimierungsverlauf</value>
+    </data>
+    <data name="History" xml:space="preserve">
+        <value>Verlauf</value>
+    </data>
+    <data name="OpenInExplorer" xml:space="preserve">
+        <value>Im Explorer anzeigen</value>
+    </data>
+    <data name="OptimizationLabel" xml:space="preserve">
+        <value>  Optimierung: </value>
+    </data>
+    <data name="OriginalFolder" xml:space="preserve">
+        <value>Ursprünglicher Ordner</value>
+    </data>
+    <data name="OriginalLabel" xml:space="preserve">
+        <value>Original: </value>
+    </data>
+    <data name="ReplaceOriginalFile" xml:space="preserve">
+        <value>Originaldatei ersetzen</value>
+    </data>
+    <data name="SaveMode" xml:space="preserve">
+        <value>Speicherart: </value>
+    </data>
+    <data name="SaveToSelectedFolder" xml:space="preserve">
+        <value>In ausgewähltem Ordner speichern</value>
+    </data>
+    <data name="SelectOutputFolder" xml:space="preserve">
+        <value>Ausgabeordner auswählen</value>
+    </data>
+    <data name="UnableCreateCompressedSource" xml:space="preserve">
+        <value>Komprimierte Quelle konnte nicht erstellt werden.</value>
+    </data>
+    <data name="Uploading" xml:space="preserve">
+        <value>Wird hochgeladen</value>
+    </data>
+    <data name="ViewImage" xml:space="preserve">
+        <value>Bild anzeigen</value>
+    </data>
 </root>

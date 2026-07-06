@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -8,7 +9,7 @@ namespace TinyGUI
 {
     public partial class App
     {
-        public static readonly string Version = "1.0.9.0";
+        public static readonly string Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
         private static readonly string[] AvailableLocales = {"zh", "zh-hant", "en", "de-de"};
 
         protected override void OnStartup(StartupEventArgs e)

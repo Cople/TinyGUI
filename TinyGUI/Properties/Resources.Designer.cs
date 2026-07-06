@@ -274,5 +274,125 @@ namespace TinyGUI.Properties {
                 return ResourceManager.GetString("UploadTip", resourceCulture);
             }
         }
+
+        public static string Browse {
+            get {
+                return ResourceManager.GetString("Browse", resourceCulture);
+            }
+        }
+
+        public static string Completed {
+            get {
+                return ResourceManager.GetString("Completed", resourceCulture);
+            }
+        }
+
+        public static string CompressedLabel {
+            get {
+                return ResourceManager.GetString("CompressedLabel", resourceCulture);
+            }
+        }
+
+        public static string Compressing {
+            get {
+                return ResourceManager.GetString("Compressing", resourceCulture);
+            }
+        }
+
+        public static string CompressionCount {
+            get {
+                return ResourceManager.GetString("CompressionCount", resourceCulture);
+            }
+        }
+
+        public static string CompressionFailed {
+            get {
+                return ResourceManager.GetString("CompressionFailed", resourceCulture);
+            }
+        }
+
+        public static string ConfigureApiKeyFirst {
+            get {
+                return ResourceManager.GetString("ConfigureApiKeyFirst", resourceCulture);
+            }
+        }
+
+        public static string EmptyCompressionHistory {
+            get {
+                return ResourceManager.GetString("EmptyCompressionHistory", resourceCulture);
+            }
+        }
+
+        public static string History {
+            get {
+                return ResourceManager.GetString("History", resourceCulture);
+            }
+        }
+
+        public static string OpenInExplorer {
+            get {
+                return ResourceManager.GetString("OpenInExplorer", resourceCulture);
+            }
+        }
+
+        public static string OptimizationLabel {
+            get {
+                return ResourceManager.GetString("OptimizationLabel", resourceCulture);
+            }
+        }
+
+        public static string OriginalFolder {
+            get {
+                return ResourceManager.GetString("OriginalFolder", resourceCulture);
+            }
+        }
+
+        public static string OriginalLabel {
+            get {
+                return ResourceManager.GetString("OriginalLabel", resourceCulture);
+            }
+        }
+
+        public static string ReplaceOriginalFile {
+            get {
+                return ResourceManager.GetString("ReplaceOriginalFile", resourceCulture);
+            }
+        }
+
+        public static string SaveMode {
+            get {
+                return ResourceManager.GetString("SaveMode", resourceCulture);
+            }
+        }
+
+        public static string SaveToSelectedFolder {
+            get {
+                return ResourceManager.GetString("SaveToSelectedFolder", resourceCulture);
+            }
+        }
+
+        public static string SelectOutputFolder {
+            get {
+                return ResourceManager.GetString("SelectOutputFolder", resourceCulture);
+            }
+        }
+
+        public static string UnableCreateCompressedSource {
+            get {
+                return ResourceManager.GetString("UnableCreateCompressedSource", resourceCulture);
+            }
+        }
+
+        public static string Uploading {
+            get {
+                return ResourceManager.GetString("Uploading", resourceCulture);
+            }
+        }
+
+        public static string ViewImage {
+            get {
+                return ResourceManager.GetString("ViewImage", resourceCulture);
+            }
+        }
     }
 }

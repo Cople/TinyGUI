@@ -4,6 +4,7 @@
         xmlns:vm="clr-namespace:TinyGUI.ViewModels"
         xmlns:local="clr-namespace:TinyGUI"
         xmlns:p="clr-namespace:TinyGUI.Properties"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:converters="clr-namespace:TinyGUI.Converters"
         Icon="../Images/panda.ico"
         FontSize="12"
@@ -17,6 +18,9 @@
   </Window.DataContext>
   <Window.Resources>
     <converters:IsVisibleConverter x:Key="IsVisibleConverter" />
+    <sys:Int32 x:Key="SaveModeOriginalFolder">1</sys:Int32>
+    <sys:Int32 x:Key="SaveModeReplaceOriginal">2</sys:Int32>
+    <sys:Int32 x:Key="SaveModeSelectedFolder">3</sys:Int32>
   </Window.Resources>
   <Window.Background>
     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -27,7 +31,7 @@
   <Grid Margin="10">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
-      <RowDefinition Height="330" />
+      <RowDefinition Height="Auto" />
       <RowDefinition Height="Auto" />
       <RowDefinition Height="Auto" />
       <RowDefinition Height="Auto" />
@@ -43,9 +47,9 @@
                      Content="{x:Static p:Resources.Compression}"
                      Style="{StaticResource CustomRadioButtonStyle}"
                      Foreground="White" />
-        <RadioButton x:Name="SmartCutRadioButton"
-                     IsChecked="{Binding SmartCutRadioButtonIsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                     Content="{x:Static p:Resources.SmartCut}"
+        <RadioButton x:Name="HistoryRadioButton"
+                     IsChecked="{Binding HistoryRadioButtonIsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Content="{x:Static p:Resources.History}"
                      Style="{StaticResource CustomRadioButtonStyle}"
                      Foreground="White" />
         <RadioButton x:Name="SettingRadioButton"
@@ -56,35 +60,165 @@
       </StackPanel>
     </Border>
     <Grid Grid.Row="1">
-      <Rectangle Grid.Row="0"
-                 AllowDrop="True"
-                 Drop="UIElement_OnDrop"
-                 Fill="#55FFFFFF"
-                 RadiusX="10"
-                 RadiusY="10"
-                 StrokeDashArray="8"
-                 StrokeDashCap="Round"
-                 Stroke="#55FFFFFF"
-                 StrokeThickness="1" />
-      <StackPanel Grid.Row="0" VerticalAlignment="Center"
-                  HorizontalAlignment="Center"
-                  IsHitTestVisible="False">
-        <Image Source="../Images/TinyGUI.png"
-               Margin="0 0 0 10"
-               Stretch="Uniform"
-               Width="100"
-               Height="100"
-               HorizontalAlignment="Center" />
-        <TextBlock HorizontalAlignment="Center"
-                   Foreground="White"
-                   Text="{x:Static p:Resources.DropImageHere}" />
-      </StackPanel>
+      <Grid Height="330"
+            Visibility="{Binding ElementName=CompressRadioButton, Path=IsChecked, Mode=OneWay, Converter={StaticResource IsVisibleConverter}}">
+        <Rectangle Grid.Row="0"
+                   AllowDrop="True"
+                   Drop="UIElement_OnDrop"
+                   Fill="#55FFFFFF"
+                   RadiusX="10"
+                   RadiusY="10"
+                   StrokeDashArray="8"
+                   StrokeDashCap="Round"
+                   Stroke="#55FFFFFF"
+                   StrokeThickness="1" />
+        <StackPanel Grid.Row="0" VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    IsHitTestVisible="False">
+          <Image Source="../Images/TinyGUI.png"
+                 Margin="0 0 0 10"
+                 Stretch="Uniform"
+                 Width="100"
+                 Height="100"
+                 HorizontalAlignment="Center" />
+          <TextBlock HorizontalAlignment="Center"
+                     Foreground="White"
+                     Text="{x:Static p:Resources.DropImageHere}" />
+        </StackPanel>
+      </Grid>
+      <Border CornerRadius="10"
+              Background="#55FFFFFF"
+              Height="330"
+              AllowDrop="True"
+              Drop="UIElement_OnDrop"
+              Padding="8"
+              Visibility="{Binding ElementName=HistoryRadioButton, Path=IsChecked, Mode=OneWay, Converter={StaticResource IsVisibleConverter}}">
+        <Grid>
+          <StackPanel VerticalAlignment="Center"
+                      HorizontalAlignment="Center"
+                      IsHitTestVisible="False"
+                      Visibility="{Binding HasCompressionHistoryItems, Converter={StaticResource IsVisibleConverter}, ConverterParameter=Invert}">
+            <Image Source="../Images/TinyGUI.png"
+                   Margin="0 0 0 10"
+                   Stretch="Uniform"
+                   Width="100"
+                   Height="100"
+                   HorizontalAlignment="Center" />
+            <TextBlock HorizontalAlignment="Center"
+                       Foreground="White"
+                       Text="{x:Static p:Resources.EmptyCompressionHistory}" />
+          </StackPanel>
+          <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      Visibility="{Binding HasCompressionHistoryItems, Converter={StaticResource IsVisibleConverter}}">
+          <ItemsControl ItemsSource="{Binding CompressionHistoryItems}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Border BorderBrush="#33FFFFFF"
+                        BorderThickness="0 0 0 1"
+                        Background="Transparent"
+                        Padding="0 6"
+                        MouseLeftButtonDown="HistoryItem_OnMouseLeftButtonDown">
+                  <Border.ContextMenu>
+                    <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                      <MenuItem Header="{x:Static p:Resources.ViewImage}"
+                                Click="ViewImageMenuItem_OnClick" />
+                      <MenuItem Header="{x:Static p:Resources.OpenInExplorer}"
+                                Click="OpenInExplorerMenuItem_OnClick" />
+                    </ContextMenu>
+                  </Border.ContextMenu>
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="48" />
+                      <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Border Width="42"
+                            Height="42"
+                            CornerRadius="4"
+                            Background="#33000000"
+                            ClipToBounds="True"
+                            VerticalAlignment="Top">
+                      <Image Source="{Binding Thumbnail}"
+                             Stretch="UniformToFill" />
+                    </Border>
+                    <StackPanel Grid.Column="1" Margin="8 0 0 0">
+                      <TextBlock Text="{Binding FileName}"
+                                 Foreground="White"
+                                 FontWeight="Bold"
+                                 TextTrimming="CharacterEllipsis" />
+                      <Grid>
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="Auto" />
+                          <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Foreground="#E2E2E2"
+                                   FontSize="11"
+                                   TextWrapping="Wrap">
+                          <Run Text="{x:Static p:Resources.OriginalLabel}" /><Run Text="{Binding OriginalSizeText}" />
+                          <Run Text="{x:Static p:Resources.CompressedLabel}" /><Run Text="{Binding CompressedSizeText}" />
+                          <Run Text="{x:Static p:Resources.OptimizationLabel}" /><Run Text="{Binding ReductionText}" />
+                          <TextBlock.Style>
+                            <Style TargetType="{x:Type TextBlock}">
+                              <Setter Property="Visibility" Value="Collapsed" />
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsCompleted}" Value="True">
+                                  <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </TextBlock.Style>
+                        </TextBlock>
+                        <TextBlock Grid.Column="0"
+                                   Foreground="#E2E2E2"
+                                   FontSize="11"
+                                   Visibility="{Binding IsProcessing, Converter={StaticResource IsVisibleConverter}}">
+                          <Run Text="{x:Static p:Resources.OriginalLabel}" /><Run Text="{Binding OriginalSizeText}" />
+                        </TextBlock>
+                        <TextBlock Grid.Column="0"
+                                   Foreground="#E2E2E2"
+                                   FontSize="11"
+                                   Visibility="{Binding HasError, Converter={StaticResource IsVisibleConverter}}">
+                          <Run Text="{x:Static p:Resources.OriginalLabel}" /><Run Text="{Binding OriginalSizeText}" />
+                        </TextBlock>
+                        <TextBlock Grid.Column="1"
+                                   Foreground="#E2E2E2"
+                                   FontSize="11"
+                                   HorizontalAlignment="Right"
+                                   Text="{Binding StatusText}"
+                                   Visibility="{Binding IsProcessing, Converter={StaticResource IsVisibleConverter}}" />
+                        <TextBlock Grid.Column="1"
+                                   Foreground="#FFE4A0A0"
+                                   FontSize="11"
+                                   HorizontalAlignment="Right"
+                                   Text="{x:Static p:Resources.CompressionFailed}"
+                                   ToolTip="{Binding StatusText}"
+                                   Visibility="{Binding HasError, Converter={StaticResource IsVisibleConverter}}" />
+                      </Grid>
+                      <ProgressBar Height="4"
+                                   Minimum="0"
+                                   Maximum="1"
+                                   Value="{Binding ProgressValue}"
+                                   IsIndeterminate="{Binding IsProgressIndeterminate}"
+                                   BorderThickness="0"
+                                   Background="#77000000"
+                                   Margin="0 4 0 0"
+                                   Visibility="{Binding IsProcessing, Converter={StaticResource IsVisibleConverter}}" />
+                    </StackPanel>
+                  </Grid>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </ScrollViewer>
+        </Grid>
+      </Border>
     </Grid>
     <Button Grid.Row="2"
             Click="DropButton_OnClick"
             Margin="0 10 0 0"
             Style="{StaticResource CornerButton}"
-            Content="{x:Static p:Resources.ChooseImageFiles}" />
+            Content="{x:Static p:Resources.ChooseImageFiles}"
+            Visibility="{Binding ElementName=CompressRadioButton, Path=IsChecked, Mode=OneWay, Converter={StaticResource IsVisibleConverter}}" />
     <ProgressBar Grid.Row="3"
                  Height="4"
                  Minimum="0" Maximum="1"
@@ -92,7 +226,8 @@
                  Value="{Binding ProgressBarValue, Mode=OneWay}"
                  IsIndeterminate="{Binding IsIndeterminate, Mode=OneWay}"
                  Background="#77000000"
-                 Margin="0 10 0 10" />
+                 Margin="0 10 0 10"
+                 Visibility="{Binding ElementName=CompressRadioButton, Path=IsChecked, Mode=OneWay, Converter={StaticResource IsVisibleConverter}}" />
     <StackPanel Grid.Row="4"
                 Visibility="{Binding ElementName=CompressRadioButton, Path=IsChecked, Mode=OneWay, Converter={StaticResource IsVisibleConverter}}">
       <TextBlock Text="{x:Static p:Resources.Upload}"
@@ -103,170 +238,15 @@
                  Margin="0 5 0 0"
                  Foreground="#E2E2E2" />
     </StackPanel>
-    <StackPanel Grid.Row="4"
-                Visibility="{Binding ElementName=SmartCutRadioButton, Path=IsChecked, Mode=OneWay, Converter={StaticResource IsVisibleConverter}}">
-      <Border Margin="0 0 0 10"
-              CornerRadius="10"
-              Background="#55FFFFFF"
-              HorizontalAlignment="Left">
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-          <RadioButton x:Name="ScaleRadioButton"
-                       Content="Scale"
-                       IsChecked="{Binding ScaleRadioButtonIsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                       Style="{StaticResource CustomRadioButtonStyle}"
-                       Foreground="White" />
-          <RadioButton x:Name="FitRadioButton"
-                       Content="Fit"
-                       IsChecked="{Binding FitRadioButtonIsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                       Style="{StaticResource CustomRadioButtonStyle}"
-                       Foreground="White" />
-          <RadioButton x:Name="CoverRadioButton"
-                       Content="Cover"
-                       IsChecked="{Binding CoverRadioButtonIsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                       Style="{StaticResource CustomRadioButtonStyle}"
-                       Foreground="White" />
-          <RadioButton x:Name="ThumbRadioButton"
-                       Content="Thumb"
-                       IsChecked="{Binding ThumbRadioButtonIsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                       Style="{StaticResource CustomRadioButtonStyle}"
-                       Foreground="White" />
-        </StackPanel>
-      </Border>
-      <Grid Margin="0 0 0 10">
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="Auto" />
-          <ColumnDefinition Width="1*" />
-          <ColumnDefinition Width="Auto" />
-          <ColumnDefinition Width="1*" />
-        </Grid.ColumnDefinitions>
-        <TextBlock Text="width:"
-                   Foreground="#E2E2E2"
-                   Grid.Column="0"
-                   VerticalAlignment="Center" />
-        <TextBox Grid.Column="1"
-                 Text="{Binding ImageWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 Style="{StaticResource CustomTextBoxStyle}"
-                 Margin="5 0 10 0"
-                 Padding="5 2"
-                 Foreground="#E2E2E2"
-                 VerticalContentAlignment="Center"
-                 Background="Transparent" />
-        <TextBlock Text="height:"
-                   Foreground="#E2E2E2"
-                   Grid.Column="2"
-                   VerticalAlignment="Center" />
-        <TextBox Grid.Column="3"
-                 Text="{Binding ImageHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 Style="{StaticResource CustomTextBoxStyle}"
-                 Margin="5 0 0 0"
-                 Padding="5 2"
-                 Foreground="#E2E2E2"
-                 VerticalContentAlignment="Center"
-                 Background="Transparent" />
-      </Grid>
-      <Border Background="#AAFFFFFF"
-              CornerRadius="5"
-              Visibility="{Binding ElementName=ScaleRadioButton, Path=IsChecked, Mode=OneWay, Converter={StaticResource IsVisibleConverter}}">
-        <Grid>
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="1*" />
-          </Grid.ColumnDefinitions>
-          <Image Grid.Column="0"
-                 Width="180"
-                 Source="../Images/scale/scale.png"
-                 Stretch="Uniform"
-                 VerticalAlignment="Center"
-                 HorizontalAlignment="Center" />
-          <TextBlock Grid.Column="1"
-                     Margin="0 0 5 0"
-                     VerticalAlignment="Center"
-                     Text="{x:Static p:Resources.ScaleTip}"
-                     TextWrapping="Wrap" />
-        </Grid>
-      </Border>
-      <Border Background="#AAFFFFFF"
-              CornerRadius="5"
-              Visibility="{Binding ElementName=FitRadioButton, Path=IsChecked, Mode=OneWay, Converter={StaticResource IsVisibleConverter}}">
-        <Grid>
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="1*" />
-          </Grid.ColumnDefinitions>
-          <Image Grid.Column="0"
-                 Width="180"
-                 Source="../Images/scale/fit.png"
-                 Stretch="Uniform"
-                 VerticalAlignment="Center"
-                 HorizontalAlignment="Center" />
-          <TextBlock Grid.Column="1"
-                     Margin="0 0 5 0"
-                     VerticalAlignment="Center"
-                     Text="{x:Static p:Resources.FitTip}"
-                     TextWrapping="Wrap" />
-        </Grid>
-      </Border>
-      <Border Background="#AAFFFFFF"
-              CornerRadius="5"
-              Visibility="{Binding ElementName=CoverRadioButton, Path=IsChecked, Mode=OneWay, Converter={StaticResource IsVisibleConverter}}">
-        <Border.BorderBrush>
-          <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#FFFFFF" Offset="0.0" />
-            <GradientStop Color="#456E7B" Offset="1.0" />
-          </LinearGradientBrush>
-        </Border.BorderBrush>
-        <Grid>
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="1*" />
-          </Grid.ColumnDefinitions>
-          <Image Grid.Column="0"
-                 Width="180"
-                 Source="../Images/scale/cover.png"
-                 Stretch="Uniform"
-                 VerticalAlignment="Center"
-                 HorizontalAlignment="Center" />
-          <TextBlock Grid.Column="1"
-                     Margin="0 0 5 0"
-                     VerticalAlignment="Center"
-                     Text="{x:Static p:Resources.CoverTip}"
-                     TextWrapping="Wrap" />
-        </Grid>
-      </Border>
-      <Border Background="#AAFFFFFF"
-              CornerRadius="5"
-              Visibility="{Binding ElementName=ThumbRadioButton, Path=IsChecked, Mode=OneWay, Converter={StaticResource IsVisibleConverter}}">
-        <Border.BorderBrush>
-          <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#FFFFFF" Offset="0.0" />
-            <GradientStop Color="#456E7B" Offset="1.0" />
-          </LinearGradientBrush>
-        </Border.BorderBrush>
-        <Grid>
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="1*" />
-          </Grid.ColumnDefinitions>
-          <Image Grid.Column="0"
-                 Width="180"
-                 Source="../Images/scale/thumb.png"
-                 Stretch="Uniform"
-                 VerticalAlignment="Center"
-                 HorizontalAlignment="Center" />
-          <TextBlock Grid.Column="1"
-                     Margin="0 0 5 0"
-                     VerticalAlignment="Center"
-                     Text="{x:Static p:Resources.ThumbTip}"
-                     TextWrapping="Wrap" />
-        </Grid>
-      </Border>
-    </StackPanel>
-    <StackPanel Grid.Row="4"
-                Visibility="{Binding ElementName=SettingRadioButton, Path=IsChecked, Mode=OneWay, Converter={StaticResource IsVisibleConverter}}">
+    <ScrollViewer Grid.Row="4"
+                  MaxHeight="620"
+                  VerticalScrollBarVisibility="Auto"
+                  Visibility="{Binding ElementName=SettingRadioButton, Path=IsChecked, Mode=OneWay, Converter={StaticResource IsVisibleConverter}}">
+      <StackPanel Margin="0 4 0 0">
       <TextBlock Text="{x:Static p:Resources.Settings}"
                  Foreground="White"
                  FontSize="14" />
-      <Grid Margin="0 5 0 0">
+      <Grid Margin="0 12 0 0">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="1*" />
@@ -278,6 +258,7 @@
                    VerticalAlignment="Center" />
         <TextBox Grid.Column="1"
                  x:Name="KeyTextBox"
+                 LostFocus="KeyTextBox_OnLostFocus"
                  Text="{Binding Source={x:Static p:Settings.Default}, Path=Key, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  Style="{StaticResource CustomTextBoxStyle}"
                  Margin="5 0 0 0"
@@ -286,7 +267,219 @@
                  VerticalContentAlignment="Center"
                  Background="Transparent" />
       </Grid>
-      <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
+      <TextBlock Foreground="#E2E2E2"
+                 Margin="0 8 0 0">
+        <Run Text="{x:Static p:Resources.CompressionCount}" />
+        <Run Text="{Binding CompressionCountText}" />
+      </TextBlock>
+      <Grid Margin="0 18 0 0">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Column="0"
+                   Text="{x:Static p:Resources.SaveMode}"
+                   Foreground="White"
+                   VerticalAlignment="Center" />
+        <ComboBox Grid.Column="1"
+                  Margin="5 0 0 0"
+                  SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=SaveMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                  SelectedValuePath="Tag"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Center">
+          <ComboBoxItem Tag="{StaticResource SaveModeOriginalFolder}"
+                        Content="{x:Static p:Resources.OriginalFolder}" />
+          <ComboBoxItem Tag="{StaticResource SaveModeReplaceOriginal}"
+                        Content="{x:Static p:Resources.ReplaceOriginalFile}" />
+          <ComboBoxItem Tag="{StaticResource SaveModeSelectedFolder}"
+                        Content="{x:Static p:Resources.SaveToSelectedFolder}" />
+        </ComboBox>
+      </Grid>
+      <Grid Margin="0 8 0 0"
+            Visibility="{Binding Source={x:Static p:Settings.Default}, Path=SaveMode, Converter={StaticResource IsVisibleConverter}, ConverterParameter=3}">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="1*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <TextBox Grid.Column="0"
+                 Text="{Binding Source={x:Static p:Settings.Default}, Path=OutputFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 Style="{StaticResource CustomTextBoxStyle}"
+                 Padding="5 2"
+                 Foreground="#E2E2E2"
+                 VerticalContentAlignment="Center"
+                 Background="Transparent" />
+        <Button Grid.Column="1"
+                Click="OutputFolderButton_OnClick"
+                Margin="5 0 0 0"
+                Padding="10 2"
+                Content="{x:Static p:Resources.Browse}"
+                Style="{StaticResource CornerButton}" />
+      </Grid>
+      <StackPanel Margin="0 10 0 0">
+        <CheckBox Style="{StaticResource CustomCheckBoxStyle}"
+                  Content="{x:Static p:Resources.SmartCut}"
+                  IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=EnableSmartCut, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                  Foreground="#E2E2E2" />
+        <StackPanel Margin="0 10 0 0"
+                    Visibility="{Binding Source={x:Static p:Settings.Default}, Path=EnableSmartCut, Converter={StaticResource IsVisibleConverter}}">
+          <Border Margin="0 0 0 10"
+                  CornerRadius="10"
+                  Background="#55FFFFFF"
+                  HorizontalAlignment="Left">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+              <RadioButton x:Name="ScaleRadioButton"
+                           Content="Scale"
+                           IsChecked="{Binding ScaleRadioButtonIsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           Style="{StaticResource CustomRadioButtonStyle}"
+                           Foreground="White" />
+              <RadioButton x:Name="FitRadioButton"
+                           Content="Fit"
+                           IsChecked="{Binding FitRadioButtonIsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           Style="{StaticResource CustomRadioButtonStyle}"
+                           Foreground="White" />
+              <RadioButton x:Name="CoverRadioButton"
+                           Content="Cover"
+                           IsChecked="{Binding CoverRadioButtonIsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           Style="{StaticResource CustomRadioButtonStyle}"
+                           Foreground="White" />
+              <RadioButton x:Name="ThumbRadioButton"
+                           Content="Thumb"
+                           IsChecked="{Binding ThumbRadioButtonIsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           Style="{StaticResource CustomRadioButtonStyle}"
+                           Foreground="White" />
+            </StackPanel>
+          </Border>
+          <Grid Margin="0 0 0 10">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="1*" />
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="width:"
+                       Foreground="#E2E2E2"
+                       Grid.Column="0"
+                       VerticalAlignment="Center" />
+            <TextBox Grid.Column="1"
+                     Text="{Binding ImageWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Style="{StaticResource CustomTextBoxStyle}"
+                     Margin="5 0 10 0"
+                     Padding="5 2"
+                     Foreground="#E2E2E2"
+                     VerticalContentAlignment="Center"
+                     Background="Transparent" />
+            <TextBlock Text="height:"
+                       Foreground="#E2E2E2"
+                       Grid.Column="2"
+                       VerticalAlignment="Center" />
+            <TextBox Grid.Column="3"
+                     Text="{Binding ImageHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Style="{StaticResource CustomTextBoxStyle}"
+                     Margin="5 0 0 0"
+                     Padding="5 2"
+                     Foreground="#E2E2E2"
+                     VerticalContentAlignment="Center"
+                     Background="Transparent" />
+          </Grid>
+          <Border Background="#AAFFFFFF"
+                  CornerRadius="5"
+                  Visibility="{Binding ElementName=ScaleRadioButton, Path=IsChecked, Mode=OneWay, Converter={StaticResource IsVisibleConverter}}">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="1*" />
+              </Grid.ColumnDefinitions>
+              <Image Grid.Column="0"
+                     Width="180"
+                     Source="../Images/scale/scale.png"
+                     Stretch="Uniform"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Center" />
+              <TextBlock Grid.Column="1"
+                         Margin="0 0 5 0"
+                         VerticalAlignment="Center"
+                         Text="{x:Static p:Resources.ScaleTip}"
+                         TextWrapping="Wrap" />
+            </Grid>
+          </Border>
+          <Border Background="#AAFFFFFF"
+                  CornerRadius="5"
+                  Visibility="{Binding ElementName=FitRadioButton, Path=IsChecked, Mode=OneWay, Converter={StaticResource IsVisibleConverter}}">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="1*" />
+              </Grid.ColumnDefinitions>
+              <Image Grid.Column="0"
+                     Width="180"
+                     Source="../Images/scale/fit.png"
+                     Stretch="Uniform"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Center" />
+              <TextBlock Grid.Column="1"
+                         Margin="0 0 5 0"
+                         VerticalAlignment="Center"
+                         Text="{x:Static p:Resources.FitTip}"
+                         TextWrapping="Wrap" />
+            </Grid>
+          </Border>
+          <Border Background="#AAFFFFFF"
+                  CornerRadius="5"
+                  Visibility="{Binding ElementName=CoverRadioButton, Path=IsChecked, Mode=OneWay, Converter={StaticResource IsVisibleConverter}}">
+            <Border.BorderBrush>
+              <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#FFFFFF" Offset="0.0" />
+                <GradientStop Color="#456E7B" Offset="1.0" />
+              </LinearGradientBrush>
+            </Border.BorderBrush>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="1*" />
+              </Grid.ColumnDefinitions>
+              <Image Grid.Column="0"
+                     Width="180"
+                     Source="../Images/scale/cover.png"
+                     Stretch="Uniform"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Center" />
+              <TextBlock Grid.Column="1"
+                         Margin="0 0 5 0"
+                         VerticalAlignment="Center"
+                         Text="{x:Static p:Resources.CoverTip}"
+                         TextWrapping="Wrap" />
+            </Grid>
+          </Border>
+          <Border Background="#AAFFFFFF"
+                  CornerRadius="5"
+                  Visibility="{Binding ElementName=ThumbRadioButton, Path=IsChecked, Mode=OneWay, Converter={StaticResource IsVisibleConverter}}">
+            <Border.BorderBrush>
+              <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#FFFFFF" Offset="0.0" />
+                <GradientStop Color="#456E7B" Offset="1.0" />
+              </LinearGradientBrush>
+            </Border.BorderBrush>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="1*" />
+              </Grid.ColumnDefinitions>
+              <Image Grid.Column="0"
+                     Width="180"
+                     Source="../Images/scale/thumb.png"
+                     Stretch="Uniform"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Center" />
+              <TextBlock Grid.Column="1"
+                         Margin="0 0 5 0"
+                         VerticalAlignment="Center"
+                         Text="{x:Static p:Resources.ThumbTip}"
+                         TextWrapping="Wrap" />
+            </Grid>
+          </Border>
+        </StackPanel>
+      </StackPanel>
+      <StackPanel Orientation="Horizontal" Margin="0 18 0 0">
         <TextBlock Text="{x:Static p:Resources.PreserveMetadata}"
                    Foreground="White" VerticalAlignment="Center">
           <TextBlock.ToolTip>
@@ -323,14 +516,8 @@
           </CheckBox.ToolTip>
         </CheckBox>
       </StackPanel>
-      <StackPanel Margin="0 10 0 0">
+      <StackPanel Margin="0 18 0 0">
         <StackPanel Orientation="Horizontal">
-          <CheckBox Style="{StaticResource CustomCheckBoxStyle}"
-                    VerticalAlignment="Center"
-                    Content="{x:Static p:Resources.ReplaceOriginalImage}"
-                    IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=ReplaceOriginalImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    Foreground="#E2E2E2" />
-          <Border BorderBrush="#88FFFFFF" BorderThickness="1 0" Margin="5 0" VerticalAlignment="Center" Height="15" />
           <TextBlock Text="{x:Static p:Resources.Lang}"
                      Margin="0 0 5 0"
                      VerticalAlignment="Center"
@@ -347,7 +534,7 @@
         </StackPanel>
       </StackPanel>
       <StackPanel Orientation="Horizontal"
-                  Margin="0 10 0 0"
+                  Margin="0 18 0 0"
                   HorizontalAlignment="Left">
         <TextBlock Foreground="#E2E2E2" FontSize="11" VerticalAlignment="Center">
           <Hyperlink Click="RedisantHyperlink_OnClick">
@@ -365,6 +552,7 @@
           </Hyperlink>
         </TextBlock>
       </StackPanel>
-    </StackPanel>
+      </StackPanel>
+    </ScrollViewer>
   </Grid>
 </Window>

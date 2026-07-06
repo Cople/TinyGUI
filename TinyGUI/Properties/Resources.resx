@@ -189,4 +189,64 @@
   <data name="CreationTimeTip" xml:space="preserve">
     <value>Any GPS location information that describes where the picture or photo was created is preserved. Contains EXIF GPS Dimensions and GPS Accuracy tags (JPEG). Uses about 130 extra bytes.</value>
   </data>
+  <data name="Browse" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Completed</value>
+  </data>
+  <data name="CompressedLabel" xml:space="preserve">
+    <value>  Compressed: </value>
+  </data>
+  <data name="Compressing" xml:space="preserve">
+    <value>Compressing</value>
+  </data>
+  <data name="CompressionCount" xml:space="preserve">
+    <value>Compression count: </value>
+  </data>
+  <data name="CompressionFailed" xml:space="preserve">
+    <value>Compression failed</value>
+  </data>
+  <data name="ConfigureApiKeyFirst" xml:space="preserve">
+    <value>Please configure API Key first</value>
+  </data>
+  <data name="EmptyCompressionHistory" xml:space="preserve">
+    <value>No compression history</value>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>History</value>
+  </data>
+  <data name="OpenInExplorer" xml:space="preserve">
+    <value>Show in File Explorer</value>
+  </data>
+  <data name="OptimizationLabel" xml:space="preserve">
+    <value>  Optimization: </value>
+  </data>
+  <data name="OriginalFolder" xml:space="preserve">
+    <value>Original folder</value>
+  </data>
+  <data name="OriginalLabel" xml:space="preserve">
+    <value>Original: </value>
+  </data>
+  <data name="ReplaceOriginalFile" xml:space="preserve">
+    <value>Replace original file</value>
+  </data>
+  <data name="SaveMode" xml:space="preserve">
+    <value>Save mode: </value>
+  </data>
+  <data name="SaveToSelectedFolder" xml:space="preserve">
+    <value>Save to selected folder</value>
+  </data>
+  <data name="SelectOutputFolder" xml:space="preserve">
+    <value>Select output folder</value>
+  </data>
+  <data name="UnableCreateCompressedSource" xml:space="preserve">
+    <value>Unable to create compressed source.</value>
+  </data>
+  <data name="Uploading" xml:space="preserve">
+    <value>Uploading</value>
+  </data>
+  <data name="ViewImage" xml:space="preserve">
+    <value>View image</value>
+  </data>
 </root>
