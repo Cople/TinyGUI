@@ -216,7 +216,7 @@ namespace TinyGUI.ViewModels
             }
         }
 
-        private string _statusText = Resources.Uploading;
+        private string _statusText = Resources.PendingUpload;
 
         public string StatusText
         {
@@ -246,6 +246,11 @@ namespace TinyGUI.ViewModels
             HasError = true;
             IsProcessing = false;
             IsCompleted = false;
+        }
+
+        public void BeginUpload()
+        {
+            StatusText = Resources.Uploading;
         }
 
         public void BeginProcessing()

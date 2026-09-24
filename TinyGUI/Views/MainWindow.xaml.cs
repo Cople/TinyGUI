@@ -92,6 +92,16 @@ namespace TinyGUI.Views
 
         private async Task Start(List<string> imgPaths)
         {
+            HashSet<string> pendingPaths = new HashSet<string>(
+                _mainModel.CompressionHistoryItems
+                    .Where(item => item.IsProcessing)
+                    .Select(item => item.FilePath),
+                StringComparer.OrdinalIgnoreCase);
+            imgPaths = imgPaths
+                .Where(path => !pendingPaths.Contains(path))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
             if (imgPaths.Count > 0)
             {
                 if (TinyGUI.Properties.Settings.Default.EnableSmartCut)
@@ -175,15 +185,23 @@ namespace TinyGUI.Views
             imgPaths.Sort();
             _mainModel.IsIndeterminate = true;
 
-            int i = 0;
-            foreach (string path in imgPaths)
+            List<CompressionHistoryItem> historyItems = imgPaths.Select(CreateHistoryItem).ToList();
+            for (int index = 0; index < historyItems.Count; index++)
             {
-                CompressionHistoryItem historyItem = CreateHistoryItem(path);
-                _mainModel.CompressionHistoryItems.Insert(0, historyItem);
-                _mainModel.HasCompressionHistoryItems = true;
+                _mainModel.CompressionHistoryItems.Insert(0, historyItems[index]);
+            }
+
+            _mainModel.HasCompressionHistoryItems = true;
+
+            int i = 0;
+            for (int index = 0; index < imgPaths.Count; index++)
+            {
+                string path = imgPaths[index];
+                CompressionHistoryItem historyItem = historyItems[index];
                 try
                 {
                     EnsureTinifyKey();
+                    historyItem.BeginUpload();
                     var source = await UploadSourceFromFile(path, historyItem);
                     source = Preserve(source);
                     historyItem.BeginProcessing();
@@ -213,15 +231,23 @@ namespace TinyGUI.Views
             imgPaths.Sort();
             _mainModel.IsIndeterminate = true;
 
-            int i = 0;
-            foreach (string path in imgPaths)
+            List<CompressionHistoryItem> historyItems = imgPaths.Select(CreateHistoryItem).ToList();
+            for (int index = 0; index < historyItems.Count; index++)
             {
-                CompressionHistoryItem historyItem = CreateHistoryItem(path);
-                _mainModel.CompressionHistoryItems.Insert(0, historyItem);
-                _mainModel.HasCompressionHistoryItems = true;
+                _mainModel.CompressionHistoryItems.Insert(0, historyItems[index]);
+            }
+
+            _mainModel.HasCompressionHistoryItems = true;
+
+            int i = 0;
+            for (int index = 0; index < imgPaths.Count; index++)
+            {
+                string path = imgPaths[index];
+                CompressionHistoryItem historyItem = historyItems[index];
                 try
                 {
                     EnsureTinifyKey();
+                    historyItem.BeginUpload();
                     var source = await UploadSourceFromFile(path, historyItem);
                     source = Preserve(source);
                     historyItem.BeginProcessing();

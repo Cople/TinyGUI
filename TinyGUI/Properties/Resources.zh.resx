@@ -140,6 +140,9 @@
     <data name="UnableCreateCompressedSource" xml:space="preserve">
         <value>无法创建压缩源。</value>
     </data>
+    <data name="PendingUpload" xml:space="preserve">
+        <value>待上传</value>
+    </data>
     <data name="Uploading" xml:space="preserve">
         <value>上传中</value>
     </data>

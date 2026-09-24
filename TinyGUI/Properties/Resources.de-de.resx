@@ -140,6 +140,9 @@
     <data name="UnableCreateCompressedSource" xml:space="preserve">
         <value>Komprimierte Quelle konnte nicht erstellt werden.</value>
     </data>
+    <data name="PendingUpload" xml:space="preserve">
+        <value>Ausstehend</value>
+    </data>
     <data name="Uploading" xml:space="preserve">
         <value>Wird hochgeladen</value>
     </data>
